@@ -1,9 +1,10 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { getRealtorToken, getOpenHouseData } from './utils/realtorApi'; // Adjust the import path as needed
+// import { fetchRealtorToken, fetchOpenHouseData } from '../utils/apiCall'; 
+// Adjust the import path as needed
 import styles from './page.module.css';
 
-export default function Home() {
+export default function RealtorData() {
   const [openHouseData, setOpenHouseData] = useState(null);
 
   useEffect(() => {
@@ -11,16 +12,16 @@ export default function Home() {
     async function fetchData() {
       try {
         // Step 1: Fetch the Realtor token
-        const tokenData = await getRealtorToken();
+        // const tokenData = await fetchRealtorToken();
 
         // Extract the access token from the tokenData response
-        const accessToken = tokenData.access_token;
+        // const accessToken = tokenData.access_token;
 
         // Step 2: Use the access token to fetch OpenHouse data
-        const data = await getOpenHouseData(accessToken);
+        // const data = await fetchOpenHouseData(accessToken);
 
         // Update the state with the OpenHouse data
-        setOpenHouseData(data);
+        // setOpenHouseData(data);
       } catch (error) {
         // Handle errors here or throw them further if needed
         console.error('Error:', error);
@@ -49,3 +50,4 @@ export default function Home() {
     </main>
   );
 }
+
