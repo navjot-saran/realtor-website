@@ -1,51 +1,43 @@
 "use client";
 import { useEffect, useState } from 'react';
-import { getRealtorToken, getOpenHouseData } from './utils/realtorApi'; // Adjust the import path as needed
-import styles from './page.module.css';
+import { OpenHouseData } from './api/realtorApi';
 
-export default function Home() {
-  const [openHouseData, setOpenHouseData] = useState(null);
+const YourComponent = () => {
+  const [data, setData] = useState<OpenHouseData[]>([]);
 
   useEffect(() => {
-    // Inside an async function to use await
-    async function fetchData() {
+    const fetchData = async () => {
       try {
-        // Step 1: Fetch the Realtor token
-        const tokenData = await getRealtorToken();
-
-        // Extract the access token from the tokenData response
-        const accessToken = tokenData.access_token;
-
-        // Step 2: Use the access token to fetch OpenHouse data
-        const data = await getOpenHouseData(accessToken);
-
-        // Update the state with the OpenHouse data
-        setOpenHouseData(data);
+        const response = await fetch('/api/getOpenHouses');
+        if (response.ok) {
+          const result = await response.json();
+          setData(result);
+        } else {
+          console.error('Error fetching data');
+        }
       } catch (error) {
-        // Handle errors here or throw them further if needed
-        console.error('Error:', error);
+        console.error('Network error', error);
       }
-    }
+    };
 
-    // Call the fetchData function when the component mounts
     fetchData();
   }, []);
 
   return (
-    <main className="grid grid-cols-2 grid-rows-2 gap-x-1/2 gap-y-1/2">
-      {/* Your other grid items */}
-      <div className=" relative bg-slate-300">
-        business
-      </div>
-      {/* Display the OpenHouse data in this div */}
-      <div className=" relative">
-        {openHouseData ? (
-          <pre>{JSON.stringify(openHouseData, null, 2)}</pre>
-        ) : (
-          <p>Loading...</p>
-        )}
-      </div>
-      {/* Your other grid items */}
-    </main>
+    <div>
+      <h1>Property Listings</h1>
+      <ul>
+        {data.map((listing, index) => (
+          <li key={index}>
+            <h2>Listing ID: {listing.ListingId}</h2>
+            <p>Open House Date: {listing.OpenHouseDate}</p>
+            <p>Open House Remarks: {listing.OpenHouseRemarks}</p>
+            {/* Add more listing details as needed */}
+          </li>
+        ))}
+      </ul>
+    </div>
   );
-}
+};
+
+export default YourComponent;
